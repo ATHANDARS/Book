@@ -1,0 +1,324 @@
+
+--Inner Join
+Insert all
+into ships values (1,'Codd Crystal',1)
+into ships values (2,'Codd Elegance',3)
+into ships values (3,'Codd Champion',Null)
+into ships values (4,'Codd Victorious',3)
+into ships values (5,'Codd Grandeur',2)
+into ships values (6,'Codd Prince',2)
+select * from dual;
+
+Insert all
+into ports values (1,'Baltimore')
+into ports values (2,'Charleston')
+into ports values (3,'Tampa')
+into ports values (4,'Miami')
+select * from dual;
+
+
+Select ship_id, ship_name, port_name
+from ships inner join ports
+on home_port_id = Port_ID
+order by ship_id;
+
+Select ship_id,ship_name,port_name
+from ships join ports
+on Home_port_id = port_id
+order by ship_id;
+
+select ship_id,ship_name,port_name
+from ships inner join ports
+on Home_Port_ID = Port_ID
+where Port_name = 'Charleston'
+order by ship_ID;
+
+--Using Table Aliases
+Create table Employees (
+Employee_ID         Number,
+Ship_id             number,
+First_name          varchar2(20),
+Last_name           varchar2(30),
+Position_ID         Number,
+SSN                 Varchar2(11),
+DOB                 Date,
+Primary_Phone       varchar2(20),
+Constraint Employee_ID_PK primary key (Employee_ID));
+
+select * from addresses;
+
+Create table addresses2 (
+Address_ID          Number constraint address2_id_pk primary key,
+Employee_ID         Number,
+Street_Address1     varchar2(40),
+Street_Address2     varchar2(40),
+City                varchar2(30),
+State               varchar2(2),
+ZIP                 varchar2(5),
+ZIP_Plus            varchar2(4),
+Country             varchar2(20),
+Constraint Employee_ID2_FK Foreign key (Employee_ID) references Employees (Employee_ID));
+
+Alter table addresses
+add constraint Address1_ID_PK primary key (Address_ID);
+
+Insert all
+into employees (Employee_ID,Last_name) values (1,'Myat')
+into employees (Employee_ID,Last_name) values (2,'Win')
+into employees (Employee_ID,Last_name) values (3,'Daniel')
+into employees (Employee_ID,Last_name) values (4,'James')
+into addresses2 (Address_ID,Employee_ID,Street_Address1) values (1001,1,'Ma Kyee Kyee Street')
+into addresses2 (Address_ID,Employee_ID,Street_Address1) values (1002,2,'Baho Road')
+into addresses2 (Address_ID,Employee_ID,Street_Address1) values (1003,3,'Waizayantar Road')
+into addresses2 (Address_ID,Employee_ID,Street_Address1) values (1004,4,'U Tun Lin Street')
+select * from dual;
+
+insert into addresses2(Address_ID,Employee_ID,Street_Address1) values (1005,'','Hello')
+
+select employees.employee_id,addresses.employee_id,street_address1,Last_name
+from addresses inner join employees
+on employees.employee_id = addresses.employee_id;
+
+select Employees.employee_ID, last_name, street_address1
+from Employees inner join addresses
+on employees.employee_id = addresses.employee_id;
+
+--Natural Join
+select employee_id,last_name,street_address1
+from employees natural join addresses2;
+
+--Natural Left outer Join
+select employee_id,last_name,street_address1
+from employees natural left outer join addresses2;
+
+--Natural Right outer Join
+select employee_id,last_name,street_address1
+from employees natural Right outer join addresses2;
+
+--Natural Full outer Join
+select employee_id,last_name,street_address1
+from employees natural Full outer join addresses2;
+
+--Using
+select employee_id,last_name,street_address1
+from employees left join addresses2
+Using (employee_id);
+
+Alter table employees
+add OFFICE_NAME varchar2(20);
+
+alter table employees
+drop column office_name;
+
+Alter table employees add OFFICE_NAME varchar2(20) default 'Marketing' not null;
+
+Alter table addresses add OFFICE_NAME varchar2(20) default 'Marketing' not null;
+
+select employee_id,last_name,street_address1
+from employees left join addresses2
+Using (employee_id,office_name);
+
+Alter table addresses
+drop constraint SYS_C007961;
+
+Alter table employees
+drop constraint SYS_C007960;
+
+insert into addresses (Address_ID,EMPLOYEE_ID,STREET_ADDRESS1,OFFICE_NAME) values (1005,4,'124 ABC 23',Null);
+
+select * from employees
+
+-- Multitable Join
+/*
+Create table Ports5 (
+Port_ID         Number  constraint PK_PORTS5 primary key,
+Port_Name       varchar2(20),
+Country         varchar2(40),
+Capacity        Number);
+
+Create table Ships5(
+Ship_ID         Number constraint PK_SHIPS5 primary key,
+Ship_Name       varchar2(20),
+Capacity        number,
+Length          number,
+HOME_PORT_ID    Number,
+Constraint FK_SHIPS5 foreign key (HOME_PORT_ID) references Ports5(Port_ID)); 
+*/
+
+Create table Ports5 (
+Port_ID         Number  constraint PK_PORTS5 primary key,
+Port_Name       varchar2(20),
+Country         varchar2(40),
+Capacity        Number);
+
+Create table Ships5(
+Ship_ID         Number constraint PK_SHIPS5 primary key,
+Ship_Name       varchar2(20),
+Capacity        number,
+Length          number,
+HOME_PORT_ID    Number,
+Constraint FK_SHIPS5 foreign key (HOME_PORT_ID) references Ports5(Port_ID)); 
+
+create table ship_cabins (
+ship_cabin_id number primary key,
+ship_id number,
+room_number varchar2(5),
+room_style varchar2(10),
+room_type varchar2(10),
+window varchar2(5),
+guests number(3),
+sq_ft number(6),
+balcony_sq_ft number(6),
+constraint ship_id_fk foreign key (ship_id) references ships5(ship_id));
+
+
+insert into ships5 values (1,'Ship1',235,45,2);
+insert into ships5 values (2,'Ship2',452,45,2);
+insert into ships5 values (3,'Ship3',541,45,1);
+insert into ships5 values (4,'Ship4',123,45,3);
+insert into ships5 values (5,'Ship5',476,45,4);
+
+
+insert into ports5 values (1,'P1','COUNT1',235);
+insert into ports5 values (2,'P2','COUNT2',452);
+insert into ports5 values (3,'P3','COUNT3',541);
+insert into ports5 values (4,'P4','COUNT4',123);
+
+
+insert into ship_cabins values (1,1,'R1','SingleRM','RT1','Win_1',3,12,6);
+insert into ship_cabins values (2,2,'R2','DblRM','RT1','Win_1',5,23,4);
+insert into ship_cabins values (3,1,'R3','DblRM','RT1','Win_1',4,22,7);
+insert into ship_cabins values (4,5,'R4','SingleRM','RT1','Win_1',1,26,9);
+insert into ship_cabins values (5,3,'R5','DblRM','RT1','Win_1',3,18,6);
+insert into ship_cabins values (6,4,'R6','SingleRM','RT1','Win_1',2,19,8);
+
+select p.port_name,s.ship_name,sc.room_number
+from ports5 p join ships s ON p.port_id=s.home_port_id
+JOIN ship_cabins sc ON s.ship_id=sc.ship_id;
+
+select port_name,ship_name
+from ports5 natural join ships; 
+
+select port_name,ship_name,room_number
+from ports5 natural join ships
+natural join ship_cabins;
+
+select port_name,ship_name,room_number
+from ports5 natural left outer join ships
+natural join ship_cabins;
+
+select port_name,ship_name,room_number
+from ports5 natural right outer join ships
+natural right join ship_cabins;
+
+create table grading (
+grading_id number primary key,
+grade char(1),
+score_min number(3),
+score_max number(3));
+
+insert into grading values (1,'A',90,100);
+insert into grading values (2,'B',80,89);
+insert into grading values (3,'C',70,79);
+insert into grading values (4,'D',60,69);
+insert into grading values (5,'E',50,59);
+
+commit;
+
+-- Non equal join
+
+select s.score_id, s.test_score,g.grade from scores s join grading g
+on s.test_score between g.score_min and g.score_max;
+
+alter table scores add score_id number;
+
+select * from scores;
+
+select * from grading;
+
+select * from positions_chp8;
+
+--Self Join
+Create Table Position (
+Position_ID     Number(4) constraint PK_POSITION_ID primary key,
+Position        varchar2(20),
+Reports_To      number(4),
+Exempt          Char(1),
+Min_Salary      number(10,2),
+Max_Salary      number(10,2));
+
+Insert all
+into position (Position_id,position,Reports_To) values (1,'Captain','')
+into position (Position_id,position,Reports_To) values (2,'Director',1)
+into position (Position_id,position,Reports_TO) values (3,'Manager',2)
+into position (Position_id,position,Reports_To) values (4,'Crew Chief',2)
+into position (Position_id,position,Reports_To) values (5,'Crew',4)
+select * from dual;
+
+Alter table position add constraint FK_PO_PO Foreign key (Reports_To) references Position(Position_ID);
+
+select * from position;
+
+Delete from Position
+where Position_ID=5;
+
+Drop table Position;
+
+Select A.position_ID "Position ID", A.position "POSITION"
+from position A JOIN position B
+ON A.reports_to = B.reports_to
+Where B.reports_to = 2;
+
+Select A.position_ID,A.position,B.position Boss
+from Position A left outer join position B
+on A.reports_to = B.position_id
+order by A.position_id;
+
+Select A.position_ID,A.position,B.position Boss
+from Position A right outer join position B
+on A.reports_to = B.position_id
+order by A.position_id;
+
+--Left Join (ANSI SYNTAX)
+select ship_ID, ship_name, port_name
+from ships, ports
+where home_port_id = port_id(+)
+order by ship_id;
+
+--Left Join (Oracle SYNTAX)
+select ship_ID, ship_name, port_name
+from ships left join ports
+on home_port_id = port_id(+)
+order by ship_id;
+
+--Right Join (ANSI SYNTAX)
+select ship_ID, ship_name, port_name
+from ships, ports
+where home_port_id (+) = port_id
+order by ship_id;
+
+--Right Join (Oracle SYNTAX)
+select ship_ID, ship_name, port_name
+from ships right join ports
+on home_port_id = port_id
+order by ship_id;
+
+--Full outer join (ANSI SYNTAX)
+select ship_ID, ship_name, port_name
+from ships, ports
+where home_port_id = port_id(+)
+Union
+select ship_ID, ship_name, port_name
+from ships, ports
+where home_port_id (+) = port_id
+order by ship_id;
+
+--Full outer join (Oracle SYNTAX)
+select ship_id,ship_name,port_name
+from ships,ports
+where home_port_id = port_id(+)
+Union
+select ship_id,ship_name,port_name
+from ships,ports
+where home_port_id(+) = port_id
+order by ship_id;
